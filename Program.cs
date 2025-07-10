@@ -1,5 +1,6 @@
 ﻿using System.Reflection.Metadata;
 using System.Security.Cryptography.X509Certificates;
+using System.Linq;
 
 namespace nbcTextRPG;
 
@@ -92,8 +93,8 @@ class Program
     {
         public int PlayerNum{ get; set; }
         public int PlayerLv { get; set; }
-        public string PlayerName { get; set; }
-        public string PlayerJob { get; set; }
+        public string? PlayerName { get; set; }
+        public string? PlayerJob { get; set; }
         public int PlayerAtk { get; set; }
         public int PlayerDef { get; set; }
         public int PlayerHP { get; set; }
@@ -114,11 +115,11 @@ class Program
     public class Item
     {
         public int ItemNum { get; set; }
-        public string ItemName { get; set; }
-        public string ItemType { get; set; }
+        public string? ItemName { get; set; }
+        public string? ItemType { get; set; }
         public int ItemAtk { get; set; }
         public int ItemDef { get; set; }
-        public string ItemInfo { get; set; }
+        public string? ItemInfo { get; set; }
         public int ItemGold { get; set; }
 
         public void ItemStatus()
@@ -172,13 +173,21 @@ class Program
                     Console.WriteLine("상태 보기");
                     Console.WriteLine("캐릭터의 정보가 표시됩니다.");
                     Console.WriteLine();
-                    player.PlayerStatus();
+                    Player? targetPlayer = playerDB.AllPlayer.FirstOrDefault(p => p.PlayerNum == 1);
+                    if (targetPlayer != null)
+                    {
+                        targetPlayer.PlayerStatus();
+                    }
+                    else
+                    {
+                        Console.WriteLine("플레이어 정보를 찾을 수 없습니다");
+                    }
                     Console.WriteLine();
                     Console.WriteLine("0. 나가기");
                     Console.WriteLine();
                     Console.WriteLine("원하시는 행동을 입력해주세요.");
                     Console.Write(">>");
-                    int pageNumStat = int.Parse(Console.ReadLine());
+                    int? pageNumStat = int.Parse(Console.ReadLine());
                     if (pageNumStat == 0)
                     {
                         currentPage = (Page)pageNumStat;
@@ -220,7 +229,7 @@ class Program
                     Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
                     Console.WriteLine();
                     Console.WriteLine("[보유 골드]");
-                    Console.WriteLine($"{player.PlayerGold}G");
+                    Console.WriteLine($"G");
                     Console.WriteLine();
                     Console.WriteLine("[아이템 목록]");
                     foreach (Item item in itemDB.AllItems)

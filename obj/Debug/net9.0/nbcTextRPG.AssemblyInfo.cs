@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("nbcTextRPG")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d3bf66799fd4417e786bb70661ba6d457d82ff2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+648b92c0ff61d2f15b9976d3d8fe521368a9b0e9")]
 [assembly: System.Reflection.AssemblyProductAttribute("nbcTextRPG")]
 [assembly: System.Reflection.AssemblyTitleAttribute("nbcTextRPG")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
