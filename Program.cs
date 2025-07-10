@@ -16,6 +16,23 @@ class Program
         BuyShop
     }
 
+    public class PlayerDB
+    {
+        public List<Player> AllPlayer = new List<Player>
+        {
+            new Player {
+                PlayerNum=1,
+                PlayerLv=1,
+                PlayerName="Chad",
+                PlayerJob="전사",
+                PlayerAtk=10,
+                PlayerDef=5,
+                PlayerHP=100,
+                PlayerGold=1500
+            }
+        };
+    }
+
     public class ItemDB
     {
         public List<Item> AllItems = new List<Item>
@@ -25,6 +42,7 @@ class Program
                 ItemName = "수련자 갑옷",
                 ItemType="Armor",
                 ItemDef=5,
+                ItemGold=1000,
                 ItemInfo="수련에 도움을 주는 갑옷입니다."
             },
             new Item {
@@ -32,6 +50,7 @@ class Program
                 ItemName = "무쇠갑옷",
                 ItemType="Armor",
                 ItemDef=9,
+                ItemGold=1800,
                 ItemInfo="무쇠로 만들어져 튼튼한 갑옷입니다."
             },
             new Item {
@@ -39,6 +58,7 @@ class Program
                 ItemName = "스파르타의 갑옷",
                 ItemType="Armor",
                 ItemDef=15,
+                ItemGold=3500,
                 ItemInfo="스파르타의 전사들이 사용했다는 전설의 갑옷입니다."
             },
             new Item {
@@ -46,6 +66,7 @@ class Program
                 ItemName = "낡은 검",
                 ItemType="Weapon",
                 ItemAtk=2,
+                ItemGold=600,
                 ItemInfo="쉽게 볼 수 있는 낡은 검 입니다."
             },
             new Item {
@@ -53,6 +74,7 @@ class Program
                 ItemName = "청동 도끼",
                 ItemType="Weapon",
                 ItemAtk=5,
+                ItemGold=1500,
                 ItemInfo="어디선가 사용됐던거 같은 도끼입니다."
             },
             new Item {
@@ -60,6 +82,7 @@ class Program
                 ItemName = "스파르타의 창",
                 ItemType="Weapon",
                 ItemAtk=7,
+                ItemGold=3000,
                 ItemInfo="스파르타의 전사들이 사용했다는 전설의 창입니다."
             }
         };
@@ -67,6 +90,7 @@ class Program
 
     public class Player
     {
+        public int PlayerNum{ get; set; }
         public int PlayerLv { get; set; }
         public string PlayerName { get; set; }
         public string PlayerJob { get; set; }
@@ -114,7 +138,7 @@ class Program
     {
         Page currentPage = Page.MainMenu;
         bool onOff = true;
-        Player player = new Player();
+        PlayerDB playerDB = new PlayerDB();
         ItemDB itemDB = new ItemDB();
 
         while (onOff)
@@ -196,7 +220,7 @@ class Program
                     Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
                     Console.WriteLine();
                     Console.WriteLine("[보유 골드]");
-                    Console.WriteLine("800 G");
+                    Console.WriteLine($"{player.PlayerGold}G");
                     Console.WriteLine();
                     Console.WriteLine("[아이템 목록]");
                     foreach (Item item in itemDB.AllItems)
