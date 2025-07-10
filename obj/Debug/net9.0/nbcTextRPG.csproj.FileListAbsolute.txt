@@ -1,0 +1,15 @@
+D:\nbcTextRPG\bin\Debug\net9.0\nbcTextRPG.exe
+D:\nbcTextRPG\bin\Debug\net9.0\nbcTextRPG.deps.json
+D:\nbcTextRPG\bin\Debug\net9.0\nbcTextRPG.runtimeconfig.json
+D:\nbcTextRPG\bin\Debug\net9.0\nbcTextRPG.dll
+D:\nbcTextRPG\bin\Debug\net9.0\nbcTextRPG.pdb
+D:\nbcTextRPG\obj\Debug\net9.0\nbcTextRPG.GeneratedMSBuildEditorConfig.editorconfig
+D:\nbcTextRPG\obj\Debug\net9.0\nbcTextRPG.AssemblyInfoInputs.cache
+D:\nbcTextRPG\obj\Debug\net9.0\nbcTextRPG.AssemblyInfo.cs
+D:\nbcTextRPG\obj\Debug\net9.0\nbcTextRPG.csproj.CoreCompileInputs.cache
+D:\nbcTextRPG\obj\Debug\net9.0\nbcTextRPG.sourcelink.json
+D:\nbcTextRPG\obj\Debug\net9.0\nbcTextRPG.dll
+D:\nbcTextRPG\obj\Debug\net9.0\refint\nbcTextRPG.dll
+D:\nbcTextRPG\obj\Debug\net9.0\nbcTextRPG.pdb
+D:\nbcTextRPG\obj\Debug\net9.0\nbcTextRPG.genruntimeconfig.cache
+D:\nbcTextRPG\obj\Debug\net9.0\ref\nbcTextRPG.dll
