@@ -1,6 +1,7 @@
 ﻿using System.Reflection.Metadata;
 using System.Security.Cryptography.X509Certificates;
 using System.Linq;
+using System.Collections;
 
 namespace nbcTextRPG;
 
@@ -29,7 +30,7 @@ class Program
                 PlayerAtk=10,
                 PlayerDef=5,
                 PlayerHP=100,
-                PlayerGold=1500
+                PlayerGold=99999
             }
         };
     }
@@ -91,7 +92,7 @@ class Program
 
     public class Player
     {
-        public int PlayerNum{ get; set; }
+        public int PlayerNum { get; set; }
         public int PlayerLv { get; set; }
         public string? PlayerName { get; set; }
         public string? PlayerJob { get; set; }
@@ -99,6 +100,7 @@ class Program
         public int PlayerDef { get; set; }
         public int PlayerHP { get; set; }
         public int PlayerGold { get; set; }
+        public Inventory Inventory { get; set; } = new Inventory();
 
         public void PlayerStatus()
         {
@@ -121,16 +123,32 @@ class Program
         public int ItemDef { get; set; }
         public string? ItemInfo { get; set; }
         public int ItemGold { get; set; }
+        public bool ItemEqui { get; set; } = false;
 
-        public void ItemStatus()
+        public void ItemStatus(string EquiMark = "")
         {
-            if (ItemType == "Weapon")
+            Console.WriteLine($"{EquiMark}{ItemName} | {(ItemType=="Weapon"? "공격력" : "방어력")} : {(ItemType=="Weapon"? ItemAtk : ItemDef)} | {ItemInfo}");
+            // if (ItemType == "Weapon")
+            // {
+            //     Console.WriteLine($"{EquiMark}{ItemName} | 공격력 : {ItemAtk} | {ItemInfo} | {ItemGold} G");
+            // }
+            // else if (ItemType == "Armor")
+            // {
+            //     Console.WriteLine($"{EquiMark}{ItemName} | 방어력 : {ItemDef} | {ItemInfo} | {ItemGold} G");
+            // }
+        }
+    }
+
+    public class Inventory
+    {
+        public List<Item> OwnedItems { get; set; } = new List<Item>();
+
+        public void ShowInventory()
+        {
+            foreach (var item in OwnedItems)
             {
-                Console.WriteLine($"{ItemName} | 공격력 : {ItemAtk} | {ItemInfo} | {ItemGold} G");
-            }
-            else if (ItemType == "Armor")
-            {
-                Console.WriteLine($"{ItemName} | 방어력 : {ItemDef} | {ItemInfo} | {ItemGold} G");
+                string ItemEqui = item.ItemEqui ? "[E]" : "";
+                item.ItemStatus();
             }
         }
     }
@@ -141,6 +159,7 @@ class Program
         bool onOff = true;
         PlayerDB playerDB = new PlayerDB();
         ItemDB itemDB = new ItemDB();
+        Player? targetPlayer = playerDB.AllPlayer.FirstOrDefault(p => p.PlayerNum == 1);
 
         while (onOff)
         {
@@ -157,7 +176,7 @@ class Program
                     Console.WriteLine("4. 게임종료");
                     Console.WriteLine();
                     Console.WriteLine("원하시는 행동을 입력해주세요.");
-                    Console.Write(">>");
+                    Console.WriteLine(">>");
                     int pageNumMain = int.Parse(Console.ReadLine());
                     if (1 <= pageNumMain && pageNumMain <= 4)
                     {
@@ -173,7 +192,6 @@ class Program
                     Console.WriteLine("상태 보기");
                     Console.WriteLine("캐릭터의 정보가 표시됩니다.");
                     Console.WriteLine();
-                    Player? targetPlayer = playerDB.AllPlayer.FirstOrDefault(p => p.PlayerNum == 1);
                     if (targetPlayer != null)
                     {
                         targetPlayer.PlayerStatus();
@@ -186,8 +204,8 @@ class Program
                     Console.WriteLine("0. 나가기");
                     Console.WriteLine();
                     Console.WriteLine("원하시는 행동을 입력해주세요.");
-                    Console.Write(">>");
-                    int? pageNumStat = int.Parse(Console.ReadLine());
+                    Console.WriteLine(">>");
+                    int pageNumStat = int.Parse(Console.ReadLine());
                     if (pageNumStat == 0)
                     {
                         currentPage = (Page)pageNumStat;
@@ -204,11 +222,15 @@ class Program
                     Console.WriteLine();
                     Console.WriteLine("[아이템 목록]");
                     Console.WriteLine();
+                    if (targetPlayer != null)
+                    {
+                        targetPlayer.Inventory.ShowInventory();
+                    }
                     Console.WriteLine("1. 장착 관리");
                     Console.WriteLine("0. 나가기");
                     Console.WriteLine();
                     Console.WriteLine("원하시는 행동을 입력해주세요.");
-                    Console.Write(">>");
+                    Console.WriteLine(">>");
                     int pageNumItem = int.Parse(Console.ReadLine());
                     if (pageNumItem == 0)
                     {
@@ -229,23 +251,36 @@ class Program
                     Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
                     Console.WriteLine();
                     Console.WriteLine("[보유 골드]");
-                    Console.WriteLine($"G");
+                    Console.WriteLine($"{targetPlayer.PlayerGold}G");
                     Console.WriteLine();
                     Console.WriteLine("[아이템 목록]");
-                    foreach (Item item in itemDB.AllItems)
+                    foreach (var shopItem in itemDB.AllItems)
                     {
-                        item.ItemStatus();
+                        bool alreadyOwned = targetPlayer.Inventory.OwnedItems.Any(i => i.ItemNum == shopItem.ItemNum);
+
+                        if (alreadyOwned)
+                        {
+                            Console.WriteLine($"{shopItem.ItemName} | {(shopItem.ItemType == "Weapon" ? "공격력" : "방어력")} : {(shopItem.ItemType == "Weapon" ? shopItem.ItemAtk : shopItem.ItemDef)} | {shopItem.ItemInfo} | 구매 완료");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{shopItem.ItemName} | {(shopItem.ItemType == "Weapon" ? "공격력" : "방어력")} : {(shopItem.ItemType == "Weapon" ? shopItem.ItemAtk : shopItem.ItemDef)} | {shopItem.ItemInfo} | {shopItem.ItemGold} G");
+                        }
                     }
                     Console.WriteLine();
                     Console.WriteLine("1. 아이템 구매");
                     Console.WriteLine("0. 나가기");
                     Console.WriteLine();
                     Console.WriteLine("원하시는 행동을 입력해주세요.");
-                    Console.Write(">>");
+                    Console.WriteLine(">>");
                     int pageNumShop = int.Parse(Console.ReadLine());
                     if (pageNumShop == 0)
                     {
                         currentPage = (Page)pageNumShop;
+                    }
+                    else if (pageNumShop == 1)
+                    {
+                        currentPage = Page.BuyShop;
                     }
                     else
                     {
@@ -253,19 +288,115 @@ class Program
                     }
                     break;
                 case Page.EquipInventory:
-                    Console.WriteLine("인벤토리");
+                    Console.WriteLine("인벤토리 - 장착 관리");
                     Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
                     Console.WriteLine();
                     Console.WriteLine("[아이템 목록]");
+                    foreach (var item in targetPlayer.Inventory.OwnedItems)
+                    {
+                        string EquiMark = item.ItemEqui ? "[E]" : "";
+                        Console.WriteLine($"{item.ItemNum}. {EquiMark}{item.ItemName} | {(item.ItemType == "Weapon" ? "공격력" : "방어력")} : {(item.ItemType == "Weapon" ? item.ItemAtk : item.ItemDef)} | {item.ItemInfo}");
+                    }
                     Console.WriteLine();
-                    Console.WriteLine("1. 장착 관리");
                     Console.WriteLine("0. 나가기");
                     Console.WriteLine();
                     Console.WriteLine("원하시는 행동을 입력해주세요.");
-                    Console.Write(">>");
+                    Console.WriteLine(">>");
+                    int pageNumInven = int.Parse(Console.ReadLine());
+                    if (pageNumInven == 0)
+                    {
+                        currentPage = Page.Inventory;
+                    }
+                    else
+                    {
+                        Item? selectedItem = targetPlayer.Inventory.OwnedItems.FirstOrDefault(i => i.ItemNum == pageNumInven);
+
+                        if (selectedItem != null)
+                        {
+                            if (selectedItem.ItemEqui)
+                            {
+                                selectedItem.ItemEqui = false;
+                                Console.WriteLine($"{selectedItem.ItemName} 장착 해제했습니다.");
+                            }
+                            else
+                            {
+                                selectedItem.ItemEqui = true;
+                                Console.WriteLine($"{selectedItem.ItemName} 장작하였습니다.");
+                            }
+                        }
+
+                    }
+
+                    break;
+                case Page.BuyShop:
+                    Console.WriteLine("상점 - 아이템 구매");
+                    Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+                    Console.WriteLine();
+                    Console.WriteLine("[보유 골드]");
+                    Console.WriteLine($"{targetPlayer.PlayerGold}G");
+                    Console.WriteLine();
+                    Console.WriteLine("[아이템 목록]");
+                    for (int i = 0; i < itemDB.AllItems.Count; i++)
+                    {
+                        var shopItem = itemDB.AllItems[i];
+
+                        bool alreadyOwned = targetPlayer.Inventory.OwnedItems.Any(i => i.ItemNum == shopItem.ItemNum);
+
+                        if (alreadyOwned)
+                        {
+                            Console.WriteLine($"{shopItem.ItemNum}. {shopItem.ItemName} | {(shopItem.ItemType == "Weapon" ? "공격력" : "방어력")} : {(shopItem.ItemType == "Weapon" ? shopItem.ItemAtk : shopItem.ItemDef)} | {shopItem.ItemInfo} | 구매 완료");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{shopItem.ItemNum}. {shopItem.ItemName} | {(shopItem.ItemType == "Weapon" ? "공격력" : "방어력")} : {(shopItem.ItemType == "Weapon" ? shopItem.ItemAtk : shopItem.ItemDef)} | {shopItem.ItemInfo} | {shopItem.ItemGold} G");
+                        }
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine("0. 나가기");
+                    Console.WriteLine();
+                    Console.WriteLine("원하시는 행동을 입력해주세요.");
+                    Console.WriteLine(">>");
+                    int pageNumBuy = int.Parse(Console.ReadLine());
+                    if (pageNumBuy == 0)
+                    {
+                        currentPage = Page.Shop;
+                    }
+                    else
+                    {
+                        Item? selectedItem = itemDB.AllItems.FirstOrDefault(i => i.ItemNum == pageNumBuy);
+
+                        if (selectedItem == null)
+                        {
+                            Console.WriteLine("잘못된 입력입니다");
+                        }
+                        else
+                        {
+                            bool alreadyOwned = targetPlayer.Inventory.OwnedItems.Any(i => i.ItemNum == selectedItem.ItemNum);
+
+                            if (alreadyOwned)
+                            {
+                                Console.WriteLine("이미 구매한 아이템입니다");
+                            }
+                            else
+                            {
+                                if (targetPlayer.PlayerGold < selectedItem.ItemGold)
+                                {
+                                    Console.WriteLine("소지금이 부족합니다.");
+                                }
+                                else
+                                {
+                                    targetPlayer.PlayerGold -= selectedItem.ItemGold;
+                                    targetPlayer.Inventory.OwnedItems.Add(selectedItem);
+                                    Console.WriteLine($"{selectedItem.ItemName}을(를) 구매하였습니다.");
+                                }
+                            }
+                        }
+                    }
                     break;
                 case Page.Exit:
+                    Console.WriteLine("게임을 종료합니다");
                     onOff = false;
+                    //Console.ReadKey();
                     break;
             }
         }
